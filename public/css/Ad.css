@@ -1,0 +1,714 @@
+/*=========================
+    GOOGLE FONT & RESET
+=========================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    overflow-x:hidden;
+    position:relative;
+    background:linear-gradient(135deg,#ff6b35,#ff8c42,#ffe4c4);
+}
+
+/*=========================
+      BACKGROUND
+=========================*/
+
+.bg-circle{
+    position:absolute;
+    border-radius:50%;
+    opacity:.15;
+}
+
+.circle1{
+    width:500px;
+    height:500px;
+    background:#fff;
+    top:-220px;
+    left:-180px;
+}
+
+.circle2{
+    width:420px;
+    height:420px;
+    background:#fff;
+    right:-120px;
+    top:-120px;
+}
+
+.circle3{
+    width:500px;
+    height:500px;
+    background:#fff;
+    right:-220px;
+    bottom:-220px;
+}
+
+/*=========================
+     FOOD ICONS
+=========================*/
+
+.food{
+    position:absolute;
+    color:rgba(255,255,255,.28);
+    z-index:1;
+}
+
+.pizza{
+    left:120px;
+    top:90px;
+    font-size:70px;
+}
+
+.burger{
+    left:70px;
+    top:250px;
+    font-size:70px;
+}
+
+.bowl{
+    left:120px;
+    bottom:220px;
+    font-size:70px;
+}
+
+.pepper{
+    right:170px;
+    top:180px;
+    font-size:55px;
+}
+
+.cheese{
+    right:180px;
+    top:70px;
+    font-size:65px;
+}
+
+.location{
+    right:160px;
+    bottom:180px;
+    font-size:60px;
+}
+
+/*=========================
+      LOGIN CARD
+=========================*/
+
+.login-card{
+    width:480px;
+    background:#fff;
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 18px 50px rgba(0,0,0,.18);
+    text-align:center;
+    position:relative;
+    z-index:10;
+}
+
+/*=========================
+       LOGO
+=========================*/
+
+.logo{
+    margin-bottom:20px;
+}
+
+.logo-icon{
+    width:80px;
+    height:80px;
+    margin:auto;
+    position:relative;
+}
+
+.logo-icon .fa-location-dot{
+    color:#ff6b35;
+    font-size:60px;
+}
+
+.logo-icon .fa-cloche{
+    position:absolute;
+    top:15px;
+    left:21px;
+    color:#333;
+    font-size:30px;
+}
+
+.logo h1{
+    margin-top:10px;
+    font-size:42px;
+    color:#222;
+    font-weight:700;
+}
+
+.logo span{
+    color:#ff6b35;
+}
+
+.logo p{
+    margin-top:6px;
+    color:#c68b2a;
+    letter-spacing:4px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/*=========================
+      TITLE
+=========================*/
+
+.login-card h2{
+    font-size:42px;
+    color:#2d3436;
+    margin-top:15px;
+}
+
+.subtitle{
+    margin:12px 0 30px;
+    color:#777;
+    font-size:15px;
+    line-height:24px;
+}
+
+/*=========================
+       INPUTS
+=========================*/
+
+.input-box{
+    width:100%;
+    height:58px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    margin-bottom:18px;
+    transition:.3s;
+    background:#fff;
+}
+
+.input-box:hover{
+    border-color:#ff6b35;
+}
+
+.input-box:focus-within{
+    border-color:#ff6b35;
+    box-shadow:0 0 10px rgba(255,107,53,.25);
+}
+
+.input-box i{
+    color:#ff6b35;
+    font-size:18px;
+}
+
+.input-box input{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:0 12px;
+    font-size:15px;
+    background:transparent;
+}
+
+.eye{
+    color:#888!important;
+    cursor:pointer;
+}
+
+/*=========================
+      OPTIONS
+=========================*/
+
+.option{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+.option label{
+    color:#666;
+}
+
+.option input{
+    accent-color:#ff6b35;
+    margin-right:5px;
+}
+
+.option a{
+    color:#ff6b35;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.option a:hover{
+    text-decoration:underline;
+}
+
+/*=========================
+      BUTTON
+=========================*/
+
+.login-btn{
+    width:100%;
+    height:58px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#ff5c00,#ff7f32);
+    color:#fff;
+    font-size:18px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.35s;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+}
+
+.login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(255,107,53,.35);
+}
+
+/*=========================
+    SECURITY BAR
+=========================*/
+
+.security{
+    margin:30px 0;
+    padding:15px 0;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #eee;
+    color:#777;
+    font-size:14px;
+}
+
+.security i{
+    color:#ff6b35;
+    margin-right:8px;
+}
+
+
+/*=========================================
+        LOGIN FOOTER
+=========================================*/
+
+.login-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid #ececec;
+    gap:10px;
+}
+
+.login-footer div{
+    flex:1;
+    text-align:center;
+    font-size:13px;
+    color:#666;
+    line-height:22px;
+}
+
+.login-footer div:not(:last-child){
+    border-right:1px solid #eeeeee;
+}
+
+.login-footer span{
+    display:block;
+    font-size:12px;
+    color:#999;
+}
+
+.login-footer i{
+    color:#ff6b35;
+    font-size:18px;
+    margin-bottom:5px;
+}
+
+.green{
+    color:#22c55e !important;
+    font-weight:600;
+}
+
+/*=========================================
+        FEATURE SECTION
+=========================================*/
+
+.bottom-box{
+    width:900px;
+    max-width:95%;
+    margin-top:35px;
+    background:#fff;
+    border-radius:18px;
+    padding:22px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+    z-index:10;
+}
+
+.box{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.box:not(:last-child){
+    border-right:1px solid #eeeeee;
+    padding-right:20px;
+}
+
+.box i{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    background:#fff4ef;
+    color:#ff6b35;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+}
+
+.box h4{
+    font-size:16px;
+    color:#333;
+    margin-bottom:4px;
+}
+
+.box p{
+    font-size:13px;
+    color:#777;
+    line-height:20px;
+}
+
+/*=========================================
+        HOVER EFFECT
+=========================================*/
+
+.box:hover{
+    transform:translateY(-5px);
+    transition:.3s;
+}
+
+.box:hover i{
+    background:#ff6b35;
+    color:#fff;
+}
+
+.login-card{
+    transition:.4s;
+}
+
+.login-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 25px 55px rgba(0,0,0,.22);
+}
+
+/*=========================================
+        INPUT PLACEHOLDER
+=========================================*/
+
+::placeholder{
+    color:#999;
+    font-size:14px;
+}
+
+/*=========================================
+        SCROLLBAR
+=========================================*/
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#ff6b35;
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-track{
+    background:#f3f3f3;
+}
+
+/*=========================================
+        ANIMATION
+=========================================*/
+
+@keyframes float{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
+.food{
+    animation:float 5s ease-in-out infinite;
+}
+
+.login-card{
+    animation:float 6s ease-in-out infinite;
+}
+
+/*=========================================
+        RESPONSIVE
+=========================================*/
+
+@media(max-width:991px){
+
+    .login-card{
+        width:90%;
+        padding:30px;
+    }
+
+    .bottom-box{
+        flex-direction:column;
+        width:90%;
+    }
+
+    .box{
+        width:100%;
+        border-right:none !important;
+        padding-right:0 !important;
+        border-bottom:1px solid #eee;
+        padding-bottom:20px;
+    }
+
+    .box:last-child{
+        border-bottom:none;
+        padding-bottom:0;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .login-card h2{
+        font-size:34px;
+    }
+
+    .logo h1{
+        font-size:34px;
+    }
+
+    .subtitle{
+        font-size:14px;
+    }
+
+    .login-footer{
+        flex-direction:column;
+        gap:18px;
+    }
+
+    .login-footer div{
+        border:none !important;
+    }
+
+}
+
+@media(max-width:576px){
+
+    body{
+        padding:20px;
+    }
+
+    .login-card{
+        padding:25px;
+        border-radius:20px;
+    }
+
+    .logo-icon{
+        width:65px;
+        height:65px;
+    }
+
+    .logo-icon .fa-location-dot{
+        font-size:48px;
+    }
+
+    .logo-icon .fa-cloche{
+        font-size:24px;
+        left:17px;
+        top:12px;
+    }
+
+    .logo h1{
+        font-size:30px;
+    }
+
+    .login-card h2{
+        font-size:28px;
+    }
+
+    .input-box{
+        height:52px;
+    }
+
+    .login-btn{
+        height:52px;
+        font-size:17px;
+    }
+
+    .food{
+        display:none;
+    }
+
+    .bg-circle{
+        display:none;
+    }
+
+}
+
+
+
+
+/*==============================
+ Decorative Images
+==============================*/
+
+.decor{
+    position:absolute;
+    user-select:none;
+    pointer-events:none;
+}
+
+/* Left */
+
+.pizza-img{
+    width:140px;
+    left:120px;
+    top:80px;
+    opacity:.25;
+}
+
+.burger-img{
+    width:120px;
+    left:80px;
+    top:240px;
+    opacity:.25;
+}
+
+.bowl-img{
+    width:120px;
+    left:120px;
+    bottom:220px;
+    opacity:.25;
+}
+
+/* Right */
+
+.chef-img{
+    width:95px;
+    right:170px;
+    top:70px;
+    opacity:.22;
+}
+
+.fries-img{
+    width:95px;
+    right:180px;
+    top:260px;
+    opacity:.22;
+}
+
+.chilli-img{
+    width:75px;
+    right:170px;
+    top:180px;
+    opacity:.22;
+}
+
+/* Leaves */
+
+.leaf1{
+    width:32px;
+    left:250px;
+    top:180px;
+    opacity:.20;
+}
+
+.leaf2{
+    width:32px;
+    left:180px;
+    bottom:150px;
+    opacity:.20;
+}
+
+.leaf3{
+    width:32px;
+    right:180px;
+    top:120px;
+    opacity:.20;
+}
+
+.leaf4{
+    width:32px;
+    right:220px;
+    bottom:220px;
+    opacity:.20;
+}
+
+/* Scooter */
+
+.scooter{
+    width:270px;
+    right:70px;
+    bottom:45px;
+    opacity:.55;
+}
+
+/* Skyline */
+
+.skyline{
+    width:360px;
+    right:0;
+    bottom:0;
+    opacity:.18;
+}
+
+/* Floating Animation */
+
+@keyframes floating{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+
+}
+
+.decor{
+    animation:floating 6s ease-in-out infinite;
+}
