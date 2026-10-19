@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -26,17 +27,49 @@ Route::middleware('auth')->group(function () {
     Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->name('forgot.password');
 
-// Update password in the users table.
-Route::post('/forgot-password/update', [AuthController::class, 'resetPassword'])
-    ->name('password.update.custom');
-    Route::get('/admin/dashboard', function () {
+
+    
+/*
+|--------------------------------------------------------------------------
+| Forgot Password Routes
+|--------------------------------------------------------------------------
+*/
+
+// Display forgot password page
+Route::get('/forgot-password', [
+    AuthController::class,
+    'forgotPassword'
+])->name('forgot.password');
+
+// Send email reset link
+Route::post('/forgot-password', [
+    AuthController::class,
+    'sendResetLink'
+])->name('password.email.custom');
+
+// Open the reset page from the email
+Route::get('/reset-password/{token}', [
+    AuthController::class,
+    'showResetPassword'
+])->name('password.reset');
+
+// Save the new password
+Route::post('/reset-password', [
+    AuthController::class,
+    'resetPassword'
+])->name('password.update.custom');
+/*
+|--------------------------------------------------------------------------
+| Admin Dashboard Route
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/dashboard', function () {
 
     if (!session()->has('admin_id')) {
         return redirect()->route('login');
     }
 
     return view('admin.dashboard');
-
-
 
 })->name('admin.dashboard');

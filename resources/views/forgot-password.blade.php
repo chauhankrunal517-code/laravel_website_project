@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password - GourmetGo</title>
+
+    <title>Forgot Password - GourmetGo</title>
 
     <link rel="stylesheet" href="{{ asset('css/l.css') }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
 
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 
 <body>
@@ -29,14 +31,14 @@
             </div>
         </div>
 
-        <h3>Reset Your</h3>
+        <h3>Recover Your</h3>
 
         <h1>Gourmet<span>Go</span></h1>
 
         <p class="description">
-            Forgot your password? No worries. Enter your registered
-            email and create a new secure password to get back to
-            your GourmetGo account.
+            Forgot your password? No worries.
+            Enter your registered email address and
+            we will send you a secure password reset link.
         </p>
 
         <div class="feature-row">
@@ -44,7 +46,7 @@
             <div class="feature-card">
                 <i class="fa-solid fa-envelope"></i>
                 <h4>Email</h4>
-                <span>Verify Account</span>
+                <span>Reset Link</span>
             </div>
 
             <div class="feature-card">
@@ -72,10 +74,10 @@
 
         <div class="login-card">
 
-            <h1>Reset Password</h1>
+            <h1>Forgot Password?</h1>
 
             <p class="sub-title">
-                Enter your registered email and create a new password.
+                Enter your registered email to receive a reset link.
             </p>
 
             @if(session('success'))
@@ -90,12 +92,14 @@
                 </div>
             @endif
 
-            <form action="{{ route('password.update.custom') }}" method="POST">
+            <form action="{{ route('password.email.custom') }}"
+                  method="POST">
 
                 @csrf
 
                 <div class="input-box">
                     <i class="fa-solid fa-envelope"></i>
+
                     <input
                         type="email"
                         name="email"
@@ -104,27 +108,9 @@
                         required>
                 </div>
 
-                <div class="input-box">
-                    <i class="fa-solid fa-lock"></i>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="New Password"
-                        required>
-                </div>
-
-                <div class="input-box">
-                    <i class="fa-solid fa-lock"></i>
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        placeholder="Confirm New Password"
-                        required>
-                </div>
-
                 <button type="submit" class="login-btn">
-                    Reset Password
-                    <i class="fa-solid fa-key"></i>
+                    Send Reset Link
+                    <i class="fa-solid fa-paper-plane"></i>
                 </button>
 
             </form>
@@ -132,6 +118,12 @@
             <div class="signup-link">
                 Remember your password?
                 <a href="{{ route('login') }}">Back to Login</a>
+            </div>
+            
+            <div class="signup-link">
+                <a href="{{ route('forgot.password') }}">
+                    Forgot Password?
+                </a>
             </div>
 
         </div>
