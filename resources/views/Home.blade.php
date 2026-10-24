@@ -67,6 +67,10 @@
                 Offers
             </a>
 
+            <a href="{{ route('cart.index') }}" class="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+
         </nav>
 
 
