@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -77,9 +78,17 @@ Route::get('/admin/dashboard', function () {
 
 
 
-// Add these routes to routes/web.php. Keep your existing routes unchanged.
-// CartController checks Laravel Auth and the session('id') used by your uploaded AuthController.
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])
+        ->name('cart.index');
+
+    Route::post('/cart/add', [CartController::class, 'add'])
+        ->name('cart.add');
+
+    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])
+        ->name('cart.update');
+
+    Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])
+        ->name('cart.remove');
+});

@@ -81,7 +81,7 @@
 
 
             <!-- CART -->
-            <a href="#" class="cart-icon">
+            <a href="{{ route('cart.index') }}" class="cart-icon">
 
                 <i class="fa-solid fa-cart-shopping"></i>
 
@@ -283,6 +283,18 @@
 
         <main class="menu-main">
 
+            @if (session('success'))
+                <div role="alert" style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#eafaf0;color:#187443;">
+                    {{ session('success') }}
+                    <a href="{{ route('cart.index') }}" style="margin-left:10px;font-weight:600;color:inherit;">View Cart</a>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div role="alert" style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#fff0f0;color:#b42318;">
+                    {{ $errors->first() }}
+                </div>
+            @endif
 
             <!-- SEARCH -->
 
@@ -332,9 +344,13 @@
                                 $14.99
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="classic-burger">
+                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
@@ -370,9 +386,13 @@
                                 $18.50
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="pizza">
+                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
@@ -408,9 +428,13 @@
                                 $22.00
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="sandwich">
+                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
@@ -446,9 +470,13 @@
                                 $8.99
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="chocolate-cake">
+                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
@@ -484,9 +512,13 @@
                                 $8.99
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="vada-pav">
+                                <button type="submit" class="add-btn" aria-label="Add Vada Pav to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
@@ -522,9 +554,13 @@
                                 $8.99
                             </span>
 
-                            <button class="add-btn">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
+                                @csrf
+                                <input type="hidden" name="product_key" value="dabeli">
+                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
 
                         </div>
 
