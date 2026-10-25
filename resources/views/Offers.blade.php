@@ -262,10 +262,10 @@
 
             <div class="price">
 
-                $28.50
+                ₹145
 
                 <del>
-                    $34.00
+                    ₹200
                 </del>
 
             </div>
@@ -644,7 +644,7 @@
 
 
                 <div class="food-price">
-                    $16.50
+                    ₹145
                 </div>
 
 
@@ -679,7 +679,7 @@
 
 
                 <div class="food-price">
-                    $18.50
+                    ₹135
                 </div>
 
 
@@ -714,7 +714,7 @@
 
 
                 <div class="food-price">
-                    $21.00
+                    ₹130
                 </div>
 
 
@@ -749,7 +749,7 @@
 
 
                 <div class="food-price">
-                    $23.50
+                    ₹200
                 </div>
 
 

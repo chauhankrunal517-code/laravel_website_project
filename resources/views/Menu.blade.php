@@ -165,20 +165,20 @@
                 <input
                     type="range"
                     id="priceSlider"
-                    min="5"
-                    max="100"
-                    value="70">
+                    min="440"
+                    max="8800"
+                    value="6160">
 
                 <div class="price-values">
 
-                    <span>$5</span>
+                    <span>₹440</span>
 
                     <span id="currentPrice">
-                        $70
+                        ₹6,160
                     </span>
 
                     <span>
-                        $100+
+                        ₹8,800+
                     </span>
 
                 </div>
@@ -341,7 +341,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $14.99
+                                ₹130
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -383,7 +383,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $18.50
+                                ₹163
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -425,7 +425,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $22.00
+                                ₹135
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -467,7 +467,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $8.99
+                                ₹191
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -509,7 +509,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $8.99
+                                ₹120
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -551,7 +551,7 @@
                         <div class="food-bottom">
 
                             <span class="price">
-                                $8.99
+                                ₹130
                             </span>
 
                             <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
@@ -648,7 +648,7 @@
     priceSlider.addEventListener("input", function () {
 
         currentPrice.textContent =
-            "$" + this.value;
+            "₹" + this.value;
 
     });
 

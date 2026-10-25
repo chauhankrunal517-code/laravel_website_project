@@ -233,7 +233,7 @@
                 </span>
 
                 <strong>
-                    $18.99
+                    ₹1,576.17
                 </strong>
 
             </div>
@@ -434,7 +434,7 @@
                         </small>
 
                         <strong>
-                            $12.99
+                            ₹135
                         </strong>
 
                     </div>
@@ -518,7 +518,7 @@
                         </small>
 
                         <strong>
-                            $15.50
+                            ₹140
                         </strong>
 
                     </div>
@@ -612,7 +612,7 @@
                         </small>
 
                         <strong>
-                            $18.00
+                            ₹130
                         </strong>
 
                     </div>
@@ -706,7 +706,7 @@
                         </small>
 
                         <strong>
-                            $14.50
+                            ₹120
                         </strong>
 
                     </div>

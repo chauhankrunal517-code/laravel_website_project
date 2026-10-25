@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,38 +22,70 @@
     </style>
 </head>
 <body>
+
+@php
+    // USD to INR reference conversion rate
+    $usdToInrRate = 94.76;
+@endphp
+
 <div class="container">
     <div class="top">
-        <div><h1><i class="fa-solid fa-cart-shopping"></i> Your Cart</h1><div class="muted">Review the items you want to order.</div></div>
-        <a class="back" href="{{ route('Menu') }}"><i class="fa-solid fa-arrow-left"></i> Continue Shopping</a>
+        <div>
+            <h1><i class="fa-solid fa-cart-shopping"></i> Your Cart</h1>
+            <div class="muted">Review the items you want to order.</div>
+        </div>
+        <a class="back" href="{{ route('Menu') }}">
+            <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+        </a>
     </div>
 
     @if(session('success'))
         <div class="message">{{ session('success') }}</div>
     @endif
+
     @if($errors->any())
-        <div class="message" style="background:#fff0f0;color:#b42318">{{ $errors->first() }}</div>
+        <div class="message" style="background:#fff0f0;color:#b42318">
+            {{ $errors->first() }}
+        </div>
     @endif
 
     @forelse($items as $item)
         <div class="item">
             <img src="{{ asset($item->image) }}" alt="{{ $item->name }}">
+
             <div>
                 <div class="name">{{ $item->name }}</div>
-                <div class="muted">Price: ${{ number_format((float)$item->price, 2) }} each</div>
-                <div style="font-weight:600;margin-top:5px">Subtotal: ${{ number_format((float)$item->price * $item->quantity, 2) }}</div>
+
+                <div class="muted">
+                    Price: ₹{{ number_format((float)$item->price * $usdToInrRate, 2) }} each
+                </div>
+
+                <div style="font-weight:600;margin-top:5px">
+                    Subtotal: ₹{{ number_format((float)$item->price * $item->quantity * $usdToInrRate, 2) }}
+                </div>
             </div>
+
             <div class="actions">
                 <form action="{{ route('cart.update', $item) }}" method="POST">
                     @csrf
                     @method('PATCH')
-                    <input class="quantity" type="number" name="quantity" min="1" max="99" value="{{ $item->quantity }}" required>
-                    <button class="small-btn" type="submit" title="Update quantity"><i class="fa-solid fa-check"></i></button>
+
+                    <input class="quantity" type="number" name="quantity"
+                           min="1" max="99" value="{{ $item->quantity }}" required>
+
+                    <button class="small-btn" type="submit" title="Update quantity">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
                 </form>
-                <form action="{{ route('cart.remove', $item) }}" method="POST" onsubmit="return confirm('Remove this item from your cart?')">
+
+                <form action="{{ route('cart.remove', $item) }}" method="POST"
+                      onsubmit="return confirm('Remove this item from your cart?')">
                     @csrf
                     @method('DELETE')
-                    <button class="small-btn remove" type="submit"><i class="fa-solid fa-trash"></i> Remove</button>
+
+                    <button class="small-btn remove" type="submit">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
                 </form>
             </div>
         </div>
@@ -67,10 +100,20 @@
 
     @if($items->isNotEmpty())
         <div class="summary">
-            <div><div class="muted">Cart Total</div><h2 style="margin:4px 0">$ {{ number_format((float)$total, 2) }}</h2></div>
-            <button class="checkout" type="button" onclick="alert('Cart saved successfully. Checkout can be connected next.')">Proceed to Checkout</button>
+            <div>
+                <div class="muted">Cart Total</div>
+                <h2 style="margin:4px 0">
+                    ₹{{ number_format((float)$total * $usdToInrRate, 2) }}
+                </h2>
+            </div>
+
+            <button class="checkout" type="button"
+                    onclick="alert('Cart saved successfully. Checkout can be connected next.')">
+                Proceed to Checkout
+            </button>
         </div>
     @endif
 </div>
+
 </body>
 </html>
