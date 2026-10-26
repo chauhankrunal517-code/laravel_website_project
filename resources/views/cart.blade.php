@@ -192,8 +192,11 @@
 
         <div class="item">
 
-            <img src="{{ asset($item->image) }}"
-                 alt="{{ $item->name }}">
+            <img
+                src="{{ $item->image_url }}"
+                alt="{{ $item->name }}"
+                class="item-image">
+
 
             <div>
                 <div class="name">{{ $item->name }}</div>

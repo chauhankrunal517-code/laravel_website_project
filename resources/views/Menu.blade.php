@@ -7,653 +7,430 @@
 
     <title>GourmetGo - Food Menu</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+          rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
+
+    <style>
+        .food-card .food-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 14px 14px 0 0;
+            background: #f5f5f5;
+        }
+
+        .food-card .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .food-card .food-content {
+            padding: 16px;
+        }
+
+        .food-card .food-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .food-card .price {
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .food-card .add-btn {
+            border: none;
+            border-radius: 9px;
+            width: 40px;
+            height: 40px;
+            background: #ff6b35;
+            color: white;
+            cursor: pointer;
+        }
+
+        .food-card .add-btn:hover {
+            background: #e85b27;
+        }
+
+        .food-card .add-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .empty-menu {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
+<!-- HEADER -->
 <header class="main-header">
-
     <div class="header-container">
 
-        <!-- LOGO -->
         <a href="{{ route('home') }}" class="logo">
-
             <div class="logo-icon">
                 <i class="fa-solid fa-utensils"></i>
             </div>
-
             <span>GourmetGo</span>
-
         </a>
 
-
-        <!-- NAVIGATION -->
         <nav class="main-nav">
-
-            <a href="{{ route('home') }}" class="active">
-                home
-            </a>
-
-            <a href="{{ url('Menu') }}">
-                Menu
-            </a>
-
-            <a href="{{ url('Restaurants') }}">
-                Restaurants
-            </a>
-
-            <a href="{{ url('Offers') }}">
-                Offers
-            </a>
-
-            
-
+            <a href="{{ route('home') }}">home</a>
+            <a href="{{ url('Menu') }}" class="active">Menu</a>
+            <a href="{{ url('Restaurants') }}">Restaurants</a>
+            <a href="{{ url('Offers') }}">Offers</a>
         </nav>
 
-
-        <!-- RIGHT SIDE -->
         <div class="header-right">
 
-            <!-- DELIVERY ADDRESS -->
             <div class="delivery-address">
-
                 <i class="fa-solid fa-location-dot"></i>
-
-                <span>
-                    Enter Delivery Address
-                </span>
-
+                <span>Enter Delivery Address</span>
             </div>
 
-
-            <!-- CART -->
             <a href="{{ route('cart.index') }}" class="cart-icon">
-
                 <i class="fa-solid fa-cart-shopping"></i>
-
             </a>
 
+            <a href="{{ url('login') }}" class="login-btn">Login</a>
 
-            <!-- LOGIN -->
-            <a href="{{ url('login') }}" class="login-btn">
-                Login
-            </a>
-
-
-            <!-- SIGN UP -->
-            <a href="{{ url('profile') }}" class="signup">
-                👤 Profile
-            </a>
+            <a href="{{ url('profile') }}" class="signup">👤 Profile</a>
 
         </div>
-
     </div>
-
 </header>
 
-
-<!-- =====================================================
-     MENU PAGE
-===================================================== -->
-
+<!-- MENU PAGE -->
 <section class="menu-section">
-
     <div class="menu-container">
 
-
-        <!-- =================================================
-             SIDEBAR
-        ================================================== -->
-
+        <!-- SIDEBAR -->
         <aside class="filter-sidebar">
 
             <h3>Filters</h3>
-
             <hr>
-
-
-            <!-- CATEGORIES -->
 
             <h4>Categories</h4>
 
-            <label class="check-item">
-                <input type="checkbox">
-                <span>Burgers</span>
-            </label>
+            @foreach(['Burger', 'Pizza', 'Sushi', 'Dessert', 'Indian', 'Pasta', 'Drinks', 'Chinese', 'Italian'] as $category)
+                <label class="check-item">
+                    <input type="checkbox"
+                           class="category-checkbox"
+                           value="{{ strtolower($category) }}">
+                    <span>{{ $category }}</span>
+                </label>
+            @endforeach
 
-            <label class="check-item">
-                <input type="checkbox">
-                <span>Pizza</span>
-            </label>
-
-            <label class="check-item">
-                <input type="checkbox">
-                <span>Sushi</span>
-            </label>
-
-            <label class="check-item">
-                <input type="checkbox">
-                <span>Desserts</span>
-            </label>
-
-            <label class="check-item">
-                <input type="checkbox">
-                <span>Indian</span>
-            </label>
-
-
-            <!-- PRICE -->
-
+            <!-- PRICE FILTER -->
             <div class="price-box">
-
                 <h3>Price Range</h3>
 
-                <input
-                    type="range"
-                    id="priceSlider"
-                    min="440"
-                    max="8800"
-                    value="6160">
+                <input type="range"
+                       id="priceSlider"
+                       min="440"
+                       max="8800"
+                       value="8800">
 
                 <div class="price-values">
-
                     <span>₹440</span>
-
-                    <span id="currentPrice">
-                        ₹6,160
-                    </span>
-
-                    <span>
-                        ₹8,800+
-                    </span>
-
+                    <span id="currentPrice">₹8,800</span>
+                    <span>₹8,800+</span>
                 </div>
-
             </div>
-
 
             <!-- CUSTOMER RATING -->
-
             <div class="filter-box">
-
                 <h3>Customer Rating</h3>
 
+                <p class="rating-text">
+                    Ratings are not available for these menu items yet.
+                </p>
 
-                <label class="rating-item">
-
-                    <div class="rating-left">
-
-                        <input type="checkbox">
-
-                        <span class="stars">
-                            ★★★★★
-                        </span>
-
-                        <span class="rating-text">
-                            4.5 & up
-                        </span>
-
-                    </div>
-
-                </label>
-
-
-                <label class="rating-item">
-
-                    <div class="rating-left">
-
-                        <input type="checkbox">
-
-                        <span class="stars">
-                            ★★★★☆
-                        </span>
-
-                        <span class="rating-text">
-                            4.0 & up
-                        </span>
-
-                    </div>
-
-                </label>
-
-
-                <!-- DIETARY -->
-
-                <h3 class="sub-title">
-                    Dietary Preference
-                </h3>
-
+                <h3 class="sub-title">Dietary Preference</h3>
 
                 <div class="toggle-item">
-
-                    <span>
-                        Vegetarian Only
-                    </span>
-
+                    <span>Vegetarian Only</span>
                     <label class="switch">
-
-                        <input type="checkbox">
-
+                        <input type="checkbox" id="vegetarianFilter">
                         <span class="slider"></span>
-
                     </label>
-
-                </div>
-
-
-                <div class="toggle-item">
-
-                    <span>
-                        Gluten Free
-                    </span>
-
-                    <label class="switch">
-
-                        <input type="checkbox" checked>
-
-                        <span class="slider"></span>
-
-                    </label>
-
                 </div>
 
             </div>
-
         </aside>
 
-
-
-        <!-- =================================================
-             MAIN MENU
-        ================================================== -->
-
+        <!-- MAIN MENU -->
         <main class="menu-main">
 
-            @if (session('success'))
-                <div role="alert" style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#eafaf0;color:#187443;">
+            @if(session('success'))
+                <div role="alert"
+                     style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#eafaf0;color:#187443;">
+
                     {{ session('success') }}
-                    <a href="{{ route('cart.index') }}" style="margin-left:10px;font-weight:600;color:inherit;">View Cart</a>
+
+                    <a href="{{ route('cart.index') }}"
+                       style="margin-left:10px;font-weight:600;color:inherit;">
+                        View Cart
+                    </a>
                 </div>
             @endif
 
-            @if ($errors->any())
-                <div role="alert" style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#fff0f0;color:#b42318;">
+            @if($errors->any())
+                <div role="alert"
+                     style="padding:12px 16px;margin-bottom:18px;border-radius:10px;background:#fff0f0;color:#b42318;">
                     {{ $errors->first() }}
                 </div>
             @endif
 
             <!-- SEARCH -->
-
             <div class="search">
+                <input type="text"
+                       id="menuSearch"
+                       placeholder="Search food...">
 
-                <input
-                    type="text"
-                    placeholder="Search food...">
-
-                <button>
+                <button type="button" id="menuSearchBtn">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     Search
                 </button>
-
             </div>
-
 
             <!-- FOOD CARDS -->
+            <div class="cards" id="foodCards">
 
-            <div class="cards">
+                @forelse($foods as $food)
 
+                    <div class="food-card"
+                         data-category="{{ strtolower($food->category ?? '') }}"
+                         data-price="{{ $food->price }}"
+                         data-status="{{ strtolower($food->status ?? 'available') }}">
 
-                <!-- BURGER -->
+                        <!-- FOOD IMAGE -->
+                        <div class="food-image">
 
-                <div class="food-card">
+                            @if(!empty($food->image) && file_exists(public_path('uploads/foods/' . basename($food->image))))
 
-                    <div class="food-image">
+                                <img
+                                    src="{{ asset('uploads/foods/' . basename($food->image)) }}"
+                                    alt="{{ $food->name }}"
+                                    loading="lazy">
 
-                        <img src="{{ asset('burger.png') }}"
-                             alt="Classic Burger">
+                            @elseif(!empty($food->image) && file_exists(public_path($food->image)))
 
-                    </div>
+                                <img
+                                    src="{{ asset($food->image) }}"
+                                    alt="{{ $food->name }}"
+                                    loading="lazy">
 
-                    <div class="food-content">
+                            @else
 
-                        <h3>
-                            Classic Burger
-                        </h3>
+                                <img
+                                    src="{{ asset('burger.png') }}"
+                                    alt="Food image unavailable"
+                                    loading="lazy">
 
-                        <p>
-                            Delicious classic burger with fresh ingredients.
-                        </p>
-
-                        <div class="food-bottom">
-
-                            <span class="price">
-                                ₹130
-                            </span>
-
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="classic-burger">
-                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
+                            @endif
 
                         </div>
 
-                    </div>
+                        <!-- FOOD DETAILS -->
+                        <div class="food-content">
 
-                </div>
+                            <h3>{{ $food->name }}</h3>
 
+                            <p>
+                                {{ $food->description ?: $food->category }}
+                            </p>
 
-                <!-- PIZZA -->
+                            <div class="food-bottom">
 
-                <div class="food-card">
+                                <span class="price">
+                                    ₹{{ number_format($food->price, 2) }}
+                                </span>
 
-                    <div class="food-image">
+                                @if(($food->status ?? 'Available') === 'Available')
 
-                        <img src="{{ asset('pizza.png') }}"
-                             alt="Pizza">
+                                    <form action="{{ route('cart.add') }}"
+                                          method="POST"
+                                          class="add-to-cart-form">
 
-                    </div>
+                                        @csrf
 
-                    <div class="food-content">
+                                        <input type="hidden"
+                                               name="food_id"
+                                               value="{{ $food->id }}">
 
-                        <h3>
-                            Pizza
-                        </h3>
+                                        <button type="submit"
+                                                class="add-btn"
+                                                aria-label="Add {{ $food->name }} to cart"
+                                                title="Add to Cart">
 
-                        <p>
-                            Freshly baked pizza with delicious toppings.
-                        </p>
+                                            <i class="fa-solid fa-plus"></i>
 
-                        <div class="food-bottom">
+                                        </button>
 
-                            <span class="price">
-                                ₹163
-                            </span>
+                                    </form>
 
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="pizza">
-                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
+                                @else
 
+                                    <button type="button"
+                                            class="add-btn"
+                                            disabled
+                                            title="Currently unavailable">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </button>
+
+                                @endif
+
+                            </div>
                         </div>
-
                     </div>
 
-                </div>
+                @empty
 
-
-                <!-- SANDWICH -->
-
-                <div class="food-card">
-
-                    <div class="food-image">
-
-                        <img src="{{ asset('sandwich.png') }}"
-                             alt="Sandwich">
-
+                    <div class="empty-menu">
+                        <h3>No food items available yet.</h3>
+                        <p>Please check back later.</p>
                     </div>
 
-                    <div class="food-content">
+                @endforelse
 
-                        <h3>
-                            Sandwich
-                        </h3>
-
-                        <p>
-                            Fresh sandwich prepared with quality ingredients.
-                        </p>
-
-                        <div class="food-bottom">
-
-                            <span class="price">
-                                ₹135
-                            </span>
-
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="sandwich">
-                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- CAKE -->
-
-                <div class="food-card">
-
-                    <div class="food-image">
-
-                        <img src="{{ asset('Cake.png') }}"
-                             alt="Chocolate Cake">
-
-                    </div>
-
-                    <div class="food-content">
-
-                        <h3>
-                            Chocolate Cake
-                        </h3>
-
-                        <p>
-                            Soft and delicious chocolate cake.
-                        </p>
-
-                        <div class="food-bottom">
-
-                            <span class="price">
-                                ₹191
-                            </span>
-
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="chocolate-cake">
-                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- VADA PAV -->
-
-                <div class="food-card">
-
-                    <div class="food-image">
-
-                        <img src="{{ asset('Vada.png') }}"
-                             alt="Vada Pav">
-
-                    </div>
-
-                    <div class="food-content">
-
-                        <h3>
-                            Vada Pav
-                        </h3>
-
-                        <p>
-                            Popular Indian street food with spicy chutney.
-                        </p>
-
-                        <div class="food-bottom">
-
-                            <span class="price">
-                                ₹120
-                            </span>
-
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="vada-pav">
-                                <button type="submit" class="add-btn" aria-label="Add Vada Pav to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- DABELI -->
-
-                <div class="food-card">
-
-                    <div class="food-image">
-
-                        <img src="{{ asset('Dabeli.png') }}"
-                             alt="Dabeli">
-
-                    </div>
-
-                    <div class="food-content">
-
-                        <h3>
-                            Dabeli
-                        </h3>
-
-                        <p>
-                            Delicious Gujarati-style spicy dabeli.
-                        </p>
-
-                        <div class="food-bottom">
-
-                            <span class="price">
-                                ₹130
-                            </span>
-
-                            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <input type="hidden" name="product_key" value="dabeli">
-                                <button type="submit" class="add-btn" aria-label="Add item to cart" title="Add to Cart">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </form>
-
-                        </div>
-
-                    </div>
-
+                <div id="noSearchResults"
+                     class="empty-menu"
+                     style="display:none;">
+                    <h3>No matching food found.</h3>
+                    <p>Try another food name or category.</p>
                 </div>
 
             </div>
-
         </main>
-
     </div>
-
 </section>
 
-
-
-<!-- =====================================================
-     NEWSLETTER
-===================================================== -->
-
+<!-- NEWSLETTER -->
 <section class="newsletter">
-
     <div class="newsletter-container">
 
         <div>
-
-            <h2>
-                Join our Newsletter
-            </h2>
-
-            <p>
-                Get delicious offers and food updates directly in your inbox.
-            </p>
-
+            <h2>Join our Newsletter</h2>
+            <p>Get delicious offers and food updates directly in your inbox.</p>
         </div>
 
+        <form class="newsletter-form"
+              action="#"
+              method="GET"
+              onsubmit="return false;">
 
-        <form class="newsletter-form">
+            <input type="email"
+                   placeholder="Enter your email"
+                   required>
 
-            <input
-                type="email"
-                placeholder="Enter your email"
-                required>
-
-            <button type="submit">
-                Subscribe
-            </button>
-
+            <button type="submit">Subscribe</button>
         </form>
 
     </div>
-
 </section>
 
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
+<!-- FOOTER -->
 <footer>
-
-    <p>
-        © 2026 GourmetGo. All Rights Reserved.
-    </p>
-
+    <p>© 2026 GourmetGo. All Rights Reserved.</p>
 </footer>
 
-
-
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-
 <script>
-
-    const priceSlider =
-        document.getElementById("priceSlider");
-
-    const currentPrice =
-        document.getElementById("currentPrice");
-
+    // Price slider
+    const priceSlider = document.getElementById("priceSlider");
+    const currentPrice = document.getElementById("currentPrice");
 
     priceSlider.addEventListener("input", function () {
-
         currentPrice.textContent =
-            "₹" + this.value;
+            "₹" + Number(this.value).toLocaleString("en-IN");
 
+        filterMenuCards();
     });
 
-</script>
+    // Search
+    const menuSearch = document.getElementById("menuSearch");
+    const menuSearchBtn = document.getElementById("menuSearchBtn");
 
+    // Category filters
+    const categoryCheckboxes =
+        document.querySelectorAll(".category-checkbox");
+
+    // Vegetarian filter
+    const vegetarianFilter = document.getElementById("vegetarianFilter");
+
+    function filterMenuCards() {
+        const searchText = menuSearch.value.toLowerCase().trim();
+        const selectedCategories = Array.from(categoryCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        const maxPrice = Number(priceSlider.value);
+        const cards = document.querySelectorAll(".food-card");
+
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+            const nameAndDescription = card.innerText.toLowerCase();
+            const category = card.dataset.category || "";
+            const price = Number(card.dataset.price || 0);
+            const status = card.dataset.status || "available";
+
+            const matchesSearch =
+                nameAndDescription.includes(searchText);
+
+            const matchesCategory =
+                selectedCategories.length === 0 ||
+                selectedCategories.some(selected =>
+                    category.includes(selected)
+                );
+
+            const matchesPrice = price <= maxPrice;
+
+            // Vegetarian filtering needs a vegetarian field in the database.
+            // This filter is intentionally not inferred from the food name.
+            const matchesVegetarian = !vegetarianFilter.checked;
+
+            const visible =
+                matchesSearch &&
+                matchesCategory &&
+                matchesPrice &&
+                matchesVegetarian &&
+                status === "available";
+
+            card.style.display = visible ? "" : "none";
+
+            if (visible) {
+                visibleCount++;
+            }
+        });
+
+        const noResults = document.getElementById("noSearchResults");
+        noResults.style.display =
+            cards.length > 0 && visibleCount === 0 ? "block" : "none";
+    }
+
+    menuSearch.addEventListener("input", filterMenuCards);
+    menuSearchBtn.addEventListener("click", filterMenuCards);
+
+    categoryCheckboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("change", filterMenuCards);
+    });
+
+    vegetarianFilter.addEventListener("change", filterMenuCards);
+</script>
 
 </body>
 </html>
