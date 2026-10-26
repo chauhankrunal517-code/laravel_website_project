@@ -2,104 +2,135 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CartItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    // Product details are kept on the server so users cannot submit a changed price.
-    private array $products = [
+    private $products = [
         'classic-burger' => [
             'name' => 'Classic Burger',
-            'price' => 14.99,
-            'image' => 'burger.png',
+            'price' => 130,
+            'image' => 'burger.png'
         ],
         'pizza' => [
             'name' => 'Pizza',
-            'price' => 18.50,
-            'image' => 'pizza.png',
+            'price' => 163,
+            'image' => 'pizza.png'
         ],
         'sandwich' => [
             'name' => 'Sandwich',
-            'price' => 22.00,
-            'image' => 'sandwich.png',
+            'price' => 135,
+            'image' => 'sandwich.png'
         ],
         'chocolate-cake' => [
             'name' => 'Chocolate Cake',
-            'price' => 8.99,
-            'image' => 'Cake.png',
+            'price' => 191,
+            'image' => 'Cake.png'
         ],
         'vada-pav' => [
             'name' => 'Vada Pav',
-            'price' => 8.99,
-            'image' => 'Vada.png',
+            'price' => 120,
+            'image' => 'Vada.png'
         ],
         'dabeli' => [
             'name' => 'Dabeli',
-            'price' => 8.99,
-            'image' => 'Dabeli.png',
+            'price' => 130,
+            'image' => 'Dabeli.png'
         ],
     ];
 
     public function index()
     {
-        $items = CartItem::where('user_id', Auth::id())
-            ->orderBy('created_at')
+        $items = DB::table('carts')
+            ->where('session_id', session()->getId())
+            ->orderBy('id')
             ->get();
 
-        $total = $items->sum(fn ($item) => $item->price * $item->quantity);
+        $total = $items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
 
         return view('cart', compact('items', 'total'));
     }
 
     public function add(Request $request)
     {
-        $data = $request->validate([
-            'product_key' => 'required|string|in:classic-burger,pizza,sandwich,chocolate-cake,vada-pav,dabeli',
+        $request->validate([
+            'product_key' => 'required|string'
         ]);
 
-        $product = $this->products[$data['product_key']];
+        $key = $request->product_key;
 
-        $item = CartItem::where('user_id', Auth::id())
-            ->where('product_key', $data['product_key'])
+        if (!isset($this->products[$key])) {
+            return back()->withErrors([
+                'product_key' => 'Invalid food item.'
+            ]);
+        }
+
+        $product = $this->products[$key];
+        $sessionId = session()->getId();
+
+        $item = DB::table('carts')
+            ->where('session_id', $sessionId)
+            ->where('product_key', $key)
             ->first();
 
         if ($item) {
-            $item->increment('quantity');
+            if ($item->quantity >= 99) {
+                return back()->withErrors([
+                    'quantity' => 'Maximum quantity is 99.'
+                ]);
+            }
+
+            DB::table('carts')
+                ->where('id', $item->id)
+                ->increment('quantity');
         } else {
-            CartItem::create([
-                'user_id' => Auth::id(),
-                'product_key' => $data['product_key'],
+            DB::table('carts')->insert([
+                'session_id' => $sessionId,
+                'product_key' => $key,
                 'name' => $product['name'],
                 'price' => $product['price'],
                 'image' => $product['image'],
                 'quantity' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
-        return back()->with('success', $product['name'] . ' added to your cart.');
+        return back()->with(
+            'success',
+            $product['name'] . ' added to your cart!'
+        );
     }
 
-    public function update(Request $request, CartItem $cartItem)
+    public function update(Request $request, $id)
     {
-        abort_unless($cartItem->user_id === Auth::id(), 403);
-
-        $data = $request->validate([
-            'quantity' => 'required|integer|min:1|max:99',
+        $request->validate([
+            'quantity' => 'required|integer|min:1|max:99'
         ]);
 
-        $cartItem->update(['quantity' => $data['quantity']]);
+        DB::table('carts')
+            ->where('id', $id)
+            ->where('session_id', session()->getId())
+            ->update([
+                'quantity' => $request->quantity,
+                'updated_at' => now(),
+            ]);
 
-        return redirect()->route('cart.index')->with('success', 'Cart quantity updated.');
+        return redirect()->route('cart.index')
+            ->with('success', 'Cart quantity updated!');
     }
 
-    public function remove(CartItem $cartItem)
+    public function remove($id)
     {
-        abort_unless($cartItem->user_id === Auth::id(), 403);
+        DB::table('carts')
+            ->where('id', $id)
+            ->where('session_id', session()->getId())
+            ->delete();
 
-        $cartItem->delete();
-
-        return redirect()->route('cart.index')->with('success', 'Item removed from cart.');
+        return redirect()->route('cart.index')
+            ->with('success', 'Item removed from your cart!');
     }
 }

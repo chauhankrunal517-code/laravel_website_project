@@ -79,16 +79,14 @@ Route::get('/admin/dashboard', function () {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])
-        ->name('cart.index');
+Route::get('/cart', [CartController::class, 'index'])
+    ->name('cart.index');
 
-    Route::post('/cart/add', [CartController::class, 'add'])
-        ->name('cart.add');
+Route::post('/cart/add', [CartController::class, 'add'])
+    ->name('cart.add');
 
-    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])
-        ->name('cart.update');
+Route::patch('/cart/{id}', [CartController::class, 'update'])
+    ->name('cart.update');
 
-    Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])
-        ->name('cart.remove');
-});
+Route::delete('/cart/{id}', [CartController::class, 'remove'])
+    ->name('cart.remove');

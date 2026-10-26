@@ -67,9 +67,7 @@
                 Offers
             </a>
 
-            <a href="{{ route('cart.index') }}" class="cart-icon">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </a>
+        
 
         </nav>
 
@@ -90,15 +88,13 @@
 
             </div>
 
-
+            
             <!-- CART -->
-
-            <a href="#" class="cart-icon">
+            <a href="{{ route('cart.index') }}" class="cart-icon">
 
                 <i class="fa-solid fa-cart-shopping"></i>
 
             </a>
-
 
             <!-- Profile -->
 

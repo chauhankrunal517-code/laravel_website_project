@@ -99,13 +99,11 @@
 
             <!-- CART -->
 
-            <a href="#cart"
-               class="cart-icon">
+            <a href="{{ route('cart.index') }}" class="cart-icon">
 
                 <i class="fa-solid fa-cart-shopping"></i>
 
             </a>
-
 
             <!-- LOGIN -->
 
@@ -463,119 +461,7 @@
 
 
 
-        <!-- =================================================
-             CART
-        ================================================== -->
-
-        <aside class="cart-box"
-               id="cart">
-
-
-            <h3>
-                Your Cart
-            </h3>
-
-
-            <!-- CART ITEM -->
-
-            <div class="cart-item">
-
-                <img src="{{ asset('burger.png') }}"
-                     alt="Truffle Burger">
-
-                <div>
-
-                    <h4>
-                        Truffle Burger
-                    </h4>
-
-                    <p>
-                        ₹145
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- CART ITEM -->
-
-            <div class="cart-item">
-
-                <img src="{{ asset('calamari.png') }}"
-                     alt="Crispy Calamari">
-
-                <div>
-
-                    <h4>
-                        Crispy Calamari
-                    </h4>
-
-                    <p>
-                        ₹170
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <hr>
-
-
-            <!-- SUBTOTAL -->
-
-            <div class="cart-row">
-
-                <span>
-                    Subtotal
-                </span>
-
-                <span>
-                    ₹315
-                </span>
-
-            </div>
-
-
-            <!-- DELIVERY -->
-
-            <div class="cart-row">
-
-                <span>
-                    Delivery Fee
-                </span>
-
-                <span>
-                    ₹315.04
-                </span>
-
-            </div>
-
-
-            <!-- TOTAL -->
-
-            <div class="cart-row total">
-
-                <span>
-                    Total
-                </span>
-
-                <span>
-                    ₹315.04
-                </span>
-
-            </div>
-
-
-            <!-- CHECKOUT -->
-
-            <button class="checkout">
-
-                Proceed To Checkout
-
-            </button>
-
+       
 
             <!-- OFFER -->
 
