@@ -148,6 +148,20 @@
 
 <main class="page-container">
 
+    @if(session('success'))
+        <div style="margin:15px 0;padding:12px 16px;background:#eafaf0;color:#187443;border-radius:10px;">
+            {{ session('success') }}
+            <a href="{{ route('cart.index') }}" style="margin-left:10px;font-weight:600;">View Cart</a>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div style="margin:15px 0;padding:12px 16px;background:#fff0f0;color:#b42318;border-radius:10px;">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+
 
     <!-- BREADCRUMB -->
 
@@ -391,36 +405,66 @@
 
             <!-- CART ACTION -->
 
-            <div class="cart-action">
+            <form id="premium-cart-form" action="{{ route('cart.add') }}" method="POST">
+                @csrf
+                <input type="hidden" name="offer_key" value="premium-truffle-burger">
+                <input type="hidden" name="quantity" id="cart-quantity" value="1">
 
+                <div class="cart-action">
+                    <div class="quantity">
+                        <button type="button" onclick="changeQuantity(-1)">-</button>
 
-                <div class="quantity">
+                        <input type="number"
+                               id="quantity"
+                               value="1"
+                               min="1"
+                               max="99"
+                               required
+                               style="width: 55px;"
+                               oninput="syncCartQuantity()"
+                               onchange="syncCartQuantity()">
 
-                    <button>
-                        -
+                        <button type="button" onclick="changeQuantity(1)">+</button>
+                    </div>
+
+                    <button type="submit" class="add-cart">
+                        <i class="fas fa-cart-plus"></i>
+                        Add to Cart
                     </button>
-
-                    <span>
-                        1
-                    </span>
-
-                    <button>
-                        +
-                    </button>
-
                 </div>
+            </form>
 
+            <script>
+                function syncCartQuantity() {
+                    const input = document.getElementById('quantity');
+                    const hiddenInput = document.getElementById('cart-quantity');
+                    let value = parseInt(input.value, 10);
 
-                <button class="add-cart">
+                    if (!Number.isFinite(value)) {
+                        value = 1;
+                    }
 
-                    <i class="fas fa-cart-plus"></i>
+                    value = Math.max(1, Math.min(99, value));
+                    input.value = value;
+                    hiddenInput.value = value;
+                }
 
-                    Add to Cart
+                function changeQuantity(amount) {
+                    const input = document.getElementById('quantity');
+                    let current = parseInt(input.value, 10);
 
-                </button>
+                    if (!Number.isFinite(current)) {
+                        current = 1;
+                    }
 
-            </div>
+                    input.value = Math.max(1, Math.min(99, current + amount));
+                    syncCartQuantity();
+                }
 
+                document.getElementById('premium-cart-form').addEventListener('submit', function () {
+                    syncCartQuantity();
+                });
+            </script>
 
             <!-- BUY NOW -->
 
@@ -647,9 +691,12 @@
                 </div>
 
 
-                <button>
-                    Add to Cart
-                </button>
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="offer_key" value="spicy-zinger">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
 
             </div>
 
@@ -682,9 +729,12 @@
                 </div>
 
 
-                <button>
-                    Add to Cart
-                </button>
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="offer_key" value="classic-double">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
 
             </div>
 
@@ -717,9 +767,12 @@
                 </div>
 
 
-                <button>
-                    Add to Cart
-                </button>
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="offer_key" value="garden-burger">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
 
             </div>
 
@@ -752,9 +805,12 @@
                 </div>
 
 
-                <button>
-                    Add to Cart
-                </button>
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="offer_key" value="bbq-bacon-king">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
 
             </div>
 

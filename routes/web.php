@@ -53,14 +53,17 @@ Route::post('/signup', [RegisterController::class, 'register'])
 
 Route::middleware('auth')->group(function () {
 
+    // Home
     Route::get('/home', function () {
         return view('home');
     })->name('home');
 
+    // Profile
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');
 
+    // Menu
     Route::get('/Menu', function () {
         $foods = Food::where('status', 'Available')
             ->latest()
@@ -69,12 +72,14 @@ Route::middleware('auth')->group(function () {
         return view('Menu', compact('foods'));
     })->name('Menu');
 
+    // Restaurants
     Route::get('/Restaurants', function () {
         return view('Restaurant');
     })->name('Restaurants');
 
+    // Offers page (products on this page are defined in CartController)
     Route::get('/Offers', function () {
-        return view('offers');
+        return view('Offers');
     })->name('Offers');
 
 });
@@ -127,7 +132,7 @@ Route::get('/cart', [CartController::class, 'index'])
 Route::post('/cart/add', [CartController::class, 'add'])
     ->name('cart.add');
 
-Route::post('/cart/update/{id}', [CartController::class, 'update'])
+Route::patch('/cart/update/{id}', [CartController::class, 'update'])
     ->name('cart.update');
 
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
@@ -147,4 +152,3 @@ Route::post('/admin/food/store', [FoodController::class, 'store'])
 
 Route::delete('/admin/food/{id}', [FoodController::class, 'destroy'])
     ->name('admin.food.destroy');
-
