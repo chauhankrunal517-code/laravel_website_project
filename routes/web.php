@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\CheckoutController;
 use App\Models\Food;
 
 /*
@@ -65,11 +66,13 @@ Route::middleware('auth')->group(function () {
 
     // Menu
     Route::get('/Menu', function () {
+
         $foods = Food::where('status', 'Available')
             ->latest()
             ->get();
 
         return view('Menu', compact('foods'));
+
     })->name('Menu');
 
     // Restaurants
@@ -77,7 +80,7 @@ Route::middleware('auth')->group(function () {
         return view('Restaurant');
     })->name('Restaurants');
 
-    // Offers page (products on this page are defined in CartController)
+    // Offers
     Route::get('/Offers', function () {
         return view('Offers');
     })->name('Offers');
@@ -138,6 +141,21 @@ Route::patch('/cart/update/{id}', [CartController::class, 'update'])
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
     ->name('cart.remove');
 
+/*
+|--------------------------------------------------------------------------
+| Checkout and Fake Payment Routes
+|--------------------------------------------------------------------------
+*/
+
+// Display Payment Page
+Route::get('/checkout', [CheckoutController::class, 'index'])
+    ->name('checkout');
+
+Route::post('/place-order', [CheckoutController::class, 'placeOrder'])
+    ->name('order.place');
+
+Route::get('/payment-success/{id}', [CheckoutController::class, 'success'])
+    ->name('payment.success');
 /*
 |--------------------------------------------------------------------------
 | Admin Food Management Routes

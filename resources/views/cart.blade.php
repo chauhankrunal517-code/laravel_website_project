@@ -270,11 +270,10 @@
                 </h2>
             </div>
 
-            <button class="checkout"
-                    type="button"
-                    onclick="alert('Your cart is ready. Checkout and order placement must be implemented separately.')">
+            <a href="{{ route('checkout') }}" class="checkout">
+                <i class="fa-solid fa-credit-card"></i>
                 Proceed to Checkout
-            </button>
+            </a> 
         </div>
 
     @endif
