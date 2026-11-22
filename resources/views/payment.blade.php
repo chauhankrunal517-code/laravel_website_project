@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en-IN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,6 +101,7 @@
 
         .item {
             display: flex;
+            align-items: center;
             justify-content: space-between;
             gap: 12px;
             border-bottom: 1px solid #eee;
@@ -143,6 +144,10 @@
             cursor: pointer;
         }
 
+        .pay-btn:hover {
+            opacity: 0.9;
+        }
+
         .back {
             display: inline-block;
             color: #ff6b35;
@@ -153,6 +158,14 @@
         .error {
             color: #b42318;
             background: #fff0f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            color: #18743b;
+            background: #eaf8ef;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -179,136 +192,197 @@
         Checkout & Payment
     </h1>
 
+    {{-- Error Messages --}}
     @if($errors->any())
         <div class="error">
             {{ $errors->first() }}
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="error">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div class="success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <form action="{{ route('order.place') }}" method="POST">
+
         @csrf
 
         <div class="layout">
 
+            {{-- LEFT SIDE --}}
             <div>
 
+                {{-- Delivery Information --}}
                 <div class="box">
 
                     <h2>Delivery Information</h2>
 
                     <label>Full Name</label>
-                    <input type="text"
-                           name="customer_name"
-                           value="{{ old('customer_name') }}"
-                           placeholder="Enter your full name"
-                           required>
+
+                    <input
+                        type="text"
+                        name="customer_name"
+                        value="{{ old('customer_name') }}"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                    <label>Email Address</label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="Enter your email address"
+                        required
+                    >
 
                     <label>Mobile Number</label>
-                    <input type="tel"
-                           name="phone"
-                           value="{{ old('phone') }}"
-                           placeholder="10 digit mobile number"
-                           pattern="[0-9]{10}"
-                           maxlength="10"
-                           required>
+
+                    <input
+                        type="tel"
+                        name="phone"
+                        value="{{ old('phone') }}"
+                        placeholder="10 digit mobile number"
+                        pattern="[0-9]{10}"
+                        maxlength="10"
+                        required
+                    >
 
                     <label>Delivery Address</label>
-                    <textarea name="address"
-                              placeholder="House number, street, area"
-                              required>{{ old('address') }}</textarea>
+
+                    <textarea
+                        name="address"
+                        placeholder="House number, street, area"
+                        required
+                    >{{ old('address') }}</textarea>
 
                     <label>City</label>
-                    <input type="text"
-                           name="city"
-                           value="{{ old('city') }}"
-                           placeholder="Enter city"
-                           required>
+
+                    <input
+                        type="text"
+                        name="city"
+                        value="{{ old('city') }}"
+                        placeholder="Enter city"
+                        required
+                    >
 
                     <label>PIN Code</label>
-                    <input type="text"
-                           name="pincode"
-                           value="{{ old('pincode') }}"
-                           placeholder="6 digit PIN code"
-                           pattern="[0-9]{6}"
-                           maxlength="6"
-                           required>
+
+                    <input
+                        type="text"
+                        name="pincode"
+                        value="{{ old('pincode') }}"
+                        placeholder="6 digit PIN code"
+                        pattern="[0-9]{6}"
+                        maxlength="6"
+                        required
+                    >
 
                 </div>
 
+                {{-- Payment Method --}}
                 <div class="box">
 
                     <h2>Select Payment Method</h2>
 
                     <div class="demo-note">
                         <i class="fa-solid fa-circle-info"></i>
+
                         Demo payment only. No real money will be charged.
                         Do not enter real bank or card details.
                     </div>
 
                     <div class="payment-option">
-                        <input type="radio"
-                               id="upi"
-                               name="payment_method"
-                               value="upi_demo"
-                               {{ old('payment_method', 'upi_demo') == 'upi_demo' ? 'checked' : '' }}
-                               required>
+
+                        <input
+                            type="radio"
+                            id="upi"
+                            name="payment_method"
+                            value="upi"
+                            {{ old('payment_method', 'upi') == 'upi' ? 'checked' : '' }}
+                            required
+                        >
 
                         <label for="upi">
                             <i class="fa-brands fa-google-pay"></i>
                             UPI Demo Payment
                         </label>
+
                     </div>
 
                     <div class="payment-option">
-                        <input type="radio"
-                               id="card"
-                               name="payment_method"
-                               value="card_demo"
-                               {{ old('payment_method') == 'card_demo' ? 'checked' : '' }}>
+
+                        <input
+                            type="radio"
+                            id="card"
+                            name="payment_method"
+                            value="card"
+                            {{ old('payment_method') == 'card' ? 'checked' : '' }}
+                        >
 
                         <label for="card">
                             <i class="fa-regular fa-credit-card"></i>
                             Debit / Credit Card Demo
                         </label>
+
                     </div>
 
                     <div class="payment-option">
-                        <input type="radio"
-                               id="cod"
-                               name="payment_method"
-                               value="cod"
-                               {{ old('payment_method') == 'cod' ? 'checked' : '' }}>
+
+                        <input
+                            type="radio"
+                            id="cod"
+                            name="payment_method"
+                            value="cod"
+                            {{ old('payment_method') == 'cod' ? 'checked' : '' }}
+                        >
 
                         <label for="cod">
                             <i class="fa-solid fa-money-bill-wave"></i>
                             Cash on Delivery
                         </label>
+
                     </div>
 
                 </div>
 
             </div>
 
+            {{-- RIGHT SIDE --}}
             <div>
 
                 <div class="box">
 
                     <h2>Order Summary</h2>
 
+                    {{-- Display Cart Items --}}
                     @foreach($items as $item)
 
                         <div class="item">
 
-                            <img src="{{ $item->image_url }}"
-                                 alt="{{ $item->name }}">
+                            <img
+                                src="{{ $item->image_url ?? asset('burger.png') }}"
+                                alt="{{ $item->name }}"
+                            >
 
                             <div class="item-info">
+
                                 <strong>{{ $item->name }}</strong>
 
                                 <div class="muted">
                                     ₹{{ number_format($item->price, 2) }}
                                     × {{ $item->quantity }}
                                 </div>
+
                             </div>
 
                             <strong>
@@ -319,16 +393,26 @@
 
                     @endforeach
 
+                    {{-- Total Amount --}}
                     <div class="total">
+
                         <span>Total</span>
-                        <span>₹{{ number_format($total, 2) }}</span>
+
+                        <span>
+                            ₹{{ number_format($total, 2) }}
+                        </span>
+
                     </div>
 
                     <br>
 
+                    {{-- Place Order Button --}}
                     <button type="submit" class="pay-btn">
+
                         <i class="fa-solid fa-lock"></i>
+
                         Place Order
+
                     </button>
 
                     <p class="muted" style="text-align:center;margin-top:12px">

@@ -1,13 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\CheckoutController;
+
 use App\Models\Food;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +23,7 @@ use App\Models\Food;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +40,7 @@ Route::post('/login', [LoginController::class, 'login'])
 Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout');
 
+
 /*
 |--------------------------------------------------------------------------
 | Registration Routes
@@ -45,6 +52,7 @@ Route::get('/signup', [RegisterController::class, 'showRegister'])
 
 Route::post('/signup', [RegisterController::class, 'register'])
     ->name('signup.store');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,10 +67,12 @@ Route::middleware('auth')->group(function () {
         return view('home');
     })->name('home');
 
+
     // Profile
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');
+
 
     // Menu
     Route::get('/Menu', function () {
@@ -75,10 +85,12 @@ Route::middleware('auth')->group(function () {
 
     })->name('Menu');
 
+
     // Restaurants
     Route::get('/Restaurants', function () {
         return view('Restaurant');
     })->name('Restaurants');
+
 
     // Offers
     Route::get('/Offers', function () {
@@ -86,6 +98,7 @@ Route::middleware('auth')->group(function () {
     })->name('Offers');
 
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +118,7 @@ Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('password.update.custom');
 
+
 /*
 |--------------------------------------------------------------------------
 | Admin Dashboard Route
@@ -122,6 +136,7 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard', compact('foods'));
 
 })->name('admin.dashboard');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -141,9 +156,10 @@ Route::patch('/cart/update/{id}', [CartController::class, 'update'])
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
     ->name('cart.remove');
 
+
 /*
 |--------------------------------------------------------------------------
-| Checkout and Fake Payment Routes
+| Checkout and Payment Routes
 |--------------------------------------------------------------------------
 */
 
@@ -151,11 +167,15 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
 Route::get('/checkout', [CheckoutController::class, 'index'])
     ->name('checkout');
 
+// Place Order and Send Invoice Email
 Route::post('/place-order', [CheckoutController::class, 'placeOrder'])
     ->name('order.place');
 
+// Payment Success Page
 Route::get('/payment-success/{id}', [CheckoutController::class, 'success'])
     ->name('payment.success');
+
+
 /*
 |--------------------------------------------------------------------------
 | Admin Food Management Routes
@@ -170,3 +190,29 @@ Route::post('/admin/food/store', [FoodController::class, 'store'])
 
 Route::delete('/admin/food/{id}', [FoodController::class, 'destroy'])
     ->name('admin.food.destroy');
+
+
+/*
+|--------------------------------------------------------------------------
+| DomPDF Test Route
+|--------------------------------------------------------------------------
+*/
+
+// Test PDF generation
+Route::get('/test-invoice', function () {
+
+    $pdf = Pdf::loadHTML('
+        <html>
+            <body style="font-family: DejaVu Sans; text-align: center;">
+                <h1 style="color: #ff6b35;">GourmetGo</h1>
+                <h2>Invoice PDF Test</h2>
+                <p>PDF generation working successfully!</p>
+                <hr>
+                <h3>Fresh Flavors, Fast Delivery.</h3>
+            </body>
+        </html>
+    ');
+
+    return $pdf->download('GourmetGo-Test-Invoice.pdf');
+
+})->name('test.invoice');

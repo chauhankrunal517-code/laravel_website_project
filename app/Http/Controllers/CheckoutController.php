@@ -5,170 +5,222 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CheckoutController extends Controller
 {
-    // Show payment page
+    // Checkout page
     public function index()
     {
+        // Get cart items
         $items = DB::table('carts')
             ->where('session_id', session()->getId())
-            ->orderBy('id')
             ->get();
 
+        // Calculate total
+        $total = $items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+
+        // Check empty cart
         if ($items->isEmpty()) {
-            return redirect()->route('cart.index')
-                ->withErrors(['cart' => 'Your cart is empty.']);
+            return redirect()
+                ->route('cart.index')
+                ->with('error', 'Your cart is empty.');
         }
 
-        $total = 0;
+        // Support both variable names in payment.blade.php
+        $cartItems = $items;
 
-        foreach ($items as $item) {
-            $total += $item->price * $item->quantity;
-
-            $image = $item->image ?? '';
-
-            if ($image && file_exists(public_path('uploads/foods/' . basename($image)))) {
-                $item->image_url = asset('uploads/foods/' . basename($image));
-            } else {
-                $item->image_url = asset('burger.png');
-            }
-        }
-
-        return view('payment', compact('items', 'total'));
+        // Send items and total to payment page
+        return view('payment', compact('items', 'cartItems', 'total'));
     }
 
+    // Alternative checkout method
+    public function checkout()
+    {
+        return $this->index();
+    }
 
-    // Save order and process demo payment
+    // Place Order
     public function placeOrder(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
             'phone' => 'required|digits:10',
             'address' => 'required|string|max:1000',
             'city' => 'required|string|max:100',
             'pincode' => 'required|digits:6',
-
-            'payment_method' => 'required|in:upi_demo,card_demo,cod',
+            'payment_method' => 'required|in:upi,card,cod',
         ]);
-
-        if ($validator->fails()) {
-            return back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         try {
 
-            $orderId = DB::transaction(function () use ($request) {
+            // Get cart items
+            $cartItems = DB::table('carts')
+                ->where('session_id', session()->getId())
+                ->get();
 
-                // Get current user's cart
-                $cartItems = DB::table('carts')
-                    ->where('session_id', session()->getId())
-                    ->orderBy('id')
-                    ->lockForUpdate()
-                    ->get();
+            if ($cartItems->isEmpty()) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Your cart is empty.');
+            }
 
-                if ($cartItems->isEmpty()) {
-                    throw new \Exception('Your cart is empty.');
-                }
+            // Prepare order items
+            $items = $cartItems->map(function ($item) {
 
-                // Calculate total
-                $total = 0;
-                $orderItems = [];
+                return [
+                    'name' => $item->name,
+                    'price' => (float) $item->price,
+                    'quantity' => (int) $item->quantity,
+                    'subtotal' => (float) $item->price *
+                        (int) $item->quantity,
+                ];
 
-                foreach ($cartItems as $item) {
+            })->values()->all();
 
-                    $subtotal = $item->price * $item->quantity;
-                    $total += $subtotal;
+            // Calculate total
+            $total = collect($items)->sum('subtotal');
 
-                    $image = $item->image ?? '';
+            // Generate order number
+            $orderNumber = 'GG' .
+                now()->format('YmdHis') .
+                random_int(100, 999);
 
-                    if ($image && file_exists(public_path('uploads/foods/' . basename($image)))) {
-                        $imageUrl = asset('uploads/foods/' . basename($image));
-                    } else {
-                        $imageUrl = asset('burger.png');
-                    }
+            // Save order in database
+            $orderId = DB::transaction(function () use (
+                $validated,
+                $items,
+                $total,
+                $orderNumber
+            ) {
 
-                    $orderItems[] = [
-                        'product_key' => $item->product_key,
-                        'name' => $item->name,
-                        'price' => $item->price,
-                        'quantity' => $item->quantity,
-                        'subtotal' => $subtotal,
-                        'image_url' => $imageUrl,
-                    ];
-                }
+                $id = DB::table('orders')->insertGetId([
 
-                // Demo payment status
-                if ($request->payment_method === 'cod') {
-                    $paymentMethod = 'Cash on Delivery';
-                    $paymentStatus = 'Pending';
-                    $paymentReference = null;
-                } else {
-                    $paymentMethod = $request->payment_method === 'upi_demo'
-                        ? 'UPI Demo'
-                        : 'Card Demo';
-
-                    $paymentStatus = 'Paid (Demo)';
-
-                    $paymentReference = 'DEMO-' . strtoupper(Str::random(10));
-                }
-
-                // Generate order number
-                $orderNumber = 'GG-' . date('Ymd') . '-' . strtoupper(Str::random(6));
-
-                // Insert order into database
-                $orderId = DB::table('orders')->insertGetId([
                     'order_number' => $orderNumber,
-
                     'user_id' => Auth::id(),
                     'session_id' => session()->getId(),
 
-                    'customer_name' => $request->customer_name,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'city' => $request->city,
-                    'pincode' => $request->pincode,
+                    'customer_name' => $validated['customer_name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
 
-                    'items' => json_encode($orderItems),
+                    'address' => $validated['address'],
+                    'city' => $validated['city'],
+                    'pincode' => $validated['pincode'],
+
+                    'items' => json_encode($items),
                     'total' => $total,
 
-                    'payment_method' => $paymentMethod,
-                    'payment_status' => $paymentStatus,
-                    'payment_reference' => $paymentReference,
-
-                    'order_status' => 'Confirmed',
+                    'payment_method' => $validated['payment_method'],
+                    'payment_status' => 'Pending',
+                    'order_status' => 'Pending',
 
                     'created_at' => now(),
                     'updated_at' => now(),
+
                 ]);
 
-                // Clear cart after saving order
+                // Remove ordered items from cart
                 DB::table('carts')
                     ->where('session_id', session()->getId())
                     ->delete();
 
-                return $orderId;
+                return $id;
             });
 
-            return redirect()->route('payment.success', $orderId)
-                ->with('success', 'Your order has been placed successfully!');
+            // Get saved order
+            $order = DB::table('orders')
+                ->where('id', $orderId)
+                ->first();
+
+            if (!$order) {
+                throw new \Exception('Order could not be found.');
+            }
+
+            // Convert JSON items into array
+            $order->items = json_decode($order->items, true) ?? [];
+
+            // Generate PDF and send email
+            try {
+
+                $pdf = Pdf::loadView(
+                    'invoices.order',
+                    ['order' => $order]
+                )->setPaper('a4', 'portrait');
+
+                $pdfContent = $pdf->output();
+
+                Mail::send(
+                    'emails.order-invoice',
+                    ['order' => $order],
+                    function ($message) use ($order, $pdfContent) {
+
+                        $message->to($order->email);
+
+                        $message->subject(
+                            'GourmetGo - Order Invoice ' .
+                            $order->order_number
+                        );
+
+                        $message->attachData(
+                            $pdfContent,
+                            'GourmetGo-Invoice-' .
+                            $order->order_number . '.pdf',
+                            [
+                                'mime' => 'application/pdf'
+                            ]
+                        );
+                    }
+                );
+
+                // Email successfully sent
+                return redirect()
+                    ->route('payment.success', ['id' => $orderId])
+                    ->with(
+                        'success',
+                        'Your order was placed successfully. Invoice sent to your email.'
+                    );
+
+            } catch (\Throwable $emailError) {
+
+                Log::error('GOURMETGO INVOICE EMAIL ERROR', [
+                    'message' => $emailError->getMessage(),
+                    'file' => $emailError->getFile(),
+                    'line' => $emailError->getLine(),
+                ]);
+
+                // Order is already saved
+                return redirect()
+                    ->route('payment.success', ['id' => $orderId])
+                    ->with(
+                        'email_warning',
+                        'Your order was saved, but the invoice email failed. Please check your email settings.'
+                    );
+            }
 
         } catch (\Throwable $e) {
 
-            report($e);
+            Log::error('GOURMETGO ORDER ERROR', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
             return back()
-                ->withErrors(['payment' => $e->getMessage()])
-                ->withInput();
+                ->withInput()
+                ->with(
+                    'error',
+                    'Unable to process your order. Please check the Laravel log.'
+                );
         }
     }
 
-
-    // Show payment success page
+    // Order Success
     public function success($id)
     {
         $order = DB::table('orders')
@@ -182,6 +234,9 @@ class CheckoutController extends Controller
 
         $orderItems = json_decode($order->items, true) ?? [];
 
-        return view('payment-success', compact('order', 'orderItems'));
+        return view(
+            'payment-success',
+            compact('order', 'orderItems')
+        );
     }
 }
